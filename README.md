@@ -2,7 +2,7 @@
 - Docker
 - Git
 
-## Etapas
+## Executar projeto
 1. Clone o repositório.
 ```
 git clone https://github.com/auguzsto/LocaSys.git
