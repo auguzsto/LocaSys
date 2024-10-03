@@ -1,7 +1,7 @@
 const tbEquipmentHistory = require('../constant/tbEquipmentHistory')
 const localTime = require('../constant/localTime')
 const tbEquipment = require('../constant/tbEquipment')
-const { literal } = require('sequelize')
+const { Op } = require('sequelize')
 
 class EquipmentHistory {
     idEquipmentHistory
@@ -57,7 +57,7 @@ class EquipmentHistory {
 
     set _entryDate(value) {
         if(value == undefined) {
-            return this.entryDate = localTime
+            return this.entryDate = localTime.dateLocalTime()
         }
     }
 
@@ -69,7 +69,7 @@ class EquipmentHistory {
         if(value == undefined) {
             return this.returnDate = null
         }
-        return this.returnDate = localTime
+        return this.returnDate = localTime.dateLocalTime()
     }
 
     async insertEquipmentHistory(data, res) {
@@ -82,6 +82,18 @@ class EquipmentHistory {
             include: {model: tbEquipment, attributes: ['idEquipment','codProd', 'equipment', 'type']}})).map(
             values => values.dataValues
         )
+        res.json(result)
+    }
+
+    static async selectEquipmentHistory(data, res) {
+        let codProd = data.codProd ? data.codProd : '%'
+        let entryDateInit = localTime.initConv(data.entryDateInit)
+        let entryDateFinish = localTime.finishConv(data.entryDateFinish)
+       
+        const result = (await tbEquipmentHistory.findAll({where:{entryDate: {[Op.gte]: entryDateInit, [Op.lte]: entryDateFinish}},
+            attributes: ['idEquipmentHistory', 'reason', 'entryDate', 'returnDate'],
+            include: {model: tbEquipment, attributes: ['idEquipment', 'codProd'], where: {codProd: {[Op.like]: codProd}}}
+        })).map(values => values.dataValues)
         res.json(result)
     }
 }

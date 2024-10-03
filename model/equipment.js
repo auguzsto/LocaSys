@@ -137,10 +137,8 @@ class Equipment {
 
     set _entryDate(value) {
         if(value == undefined){
-            throw new Error('Invalid entryDate')
-        }
-
-        return this.entryDate = new Date(value.split('/').reverse().join('-')).toISOString().split('T')[0]
+            return this.entryDate = new Date(value.split('/').reverse().join('-')).toISOString().split('T')[0]
+        } 
     }
 
     get _deletionDate() {

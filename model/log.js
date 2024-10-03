@@ -48,7 +48,7 @@ class Log {
             throw new Error('Invalid actionDate')
         }
         
-        return this.actionDate = locaTime
+        return this.actionDate = locaTime.dateLocalTime()
     }
 
     get _idUser() {
@@ -76,8 +76,8 @@ class Log {
     }
 
     static async selectLog(dateInit, dateFinish, action, res) {
-       const dtInitCov = dateInit ? new Date(dateInit.split('/').reverse().join('-')) : '2001-01-01T00:00:00.000Z'
-       const dtFinishCov = dateFinish ? new Date(dateFinish.split('/').reverse().join('-')).toISOString().split('T')[0] + 'T23:59:59.000Z': new Date().toISOString().split('T')[0] + 'T23:59:59.000Z'
+       const dtInitCov = locaTime.initConv(dateInit)
+       const dtFinishCov = locaTime.finishConv(dateFinish)
        const valueAction = action ? action : '%'
 
        const result = (await tbLog.findAll({where:{action: {[Op.like]: valueAction} ,actionDate: {[Op.gte]: dtInitCov, [Op.lte]: dtFinishCov}}})).map(
