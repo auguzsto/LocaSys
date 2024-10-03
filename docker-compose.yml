@@ -1,0 +1,28 @@
+services:
+  backend:
+    container_name: backend
+    build: 
+      context: .
+      dockerfile: /docker/app/Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - 3000:${PORT}
+    depends_on:
+      - postgres
+    env_file:
+      - .env
+  
+  postgres:
+    container_name: postgres
+    image: postgres:16
+    volumes:
+      - ./docker/postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: "locasys"
+      POSTGRES_PASSWORD: ${db_password}
+    env_file:
+      - .env
+  
